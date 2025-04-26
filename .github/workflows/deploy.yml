@@ -1,28 +1,26 @@
-# File: .github/workflows/deploy.yml
-
-name: Deploy Azure Enterprise Setup
+name: 'Deploy Azure Enterprise Setup'
 
 on:
   push:
     branches:
-      - main
+      - main  # or whichever branch you are pushing to
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: 'Checkout code'
+        uses: actions/checkout@v3
 
-    - name: Login to Azure
-      uses: azure/login@v2
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: 'Login to Azure'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Deploy Bicep template
-      run: |
-        az deployment sub create \
-          --location australiaeast \
-          --template-file ./azure_enterprise_setup.bicep \
-          --parameters departmentTag="Development"
+      - name: 'Deploy Bicep template'
+        run: |
+          az deployment sub create \
+            --name enterprise-setup-deployment \
+            --location australiaeast \
+            --template-file main.bicep \
+            --parameters rgName=rg-dummy-test location=australiaeast
