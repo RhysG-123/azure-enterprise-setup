@@ -4,13 +4,16 @@ targetScope = 'subscription'
 @description('Name of the Resource Group')
 param rgName string = 'rg-dummy-test'
 
-@description('Location for the Resource Group')
+@description('Location for the Resource Group and Storage Account')
 param location string = 'australiaeast'
 
 // Create the Resource Group
 resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: rgName
   location: location
+  tags: {
+    Department: 'IT'
+  }
 }
 
 // Deploy the Storage Account inside the Resource Group
