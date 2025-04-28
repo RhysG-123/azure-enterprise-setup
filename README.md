@@ -1,38 +1,40 @@
-# Azure Enterprise Setup (Level 3 - Bicep)
+# Azure Enterprise Mock Environment
 
-This project simulates a real-world enterprise Azure environment using **Bicep** for infrastructure as code. It includes governance, tagging, and automation-ready structure for showcasing professional cloud engineering skills.
+## Overview
+This project simulates a real-world enterprise Azure environment, including Management Groups, Subscriptions, Resource Groups, Policies, RBAC access control, and Cost Management.
 
-## 📦 What This Bicep Template Does
+It is built using infrastructure as code (Bicep) and automated deployment through GitHub Actions (CI/CD pipeline).
 
-- Deploys a **resource group** (`rg-dummy-test`) in `australiaeast`
-- Deploys a **storage account** with `Standard_LRS` SKU
-- Applies a **Department tag** (default: `Development`) to all resources
+## Technologies Used
+- Microsoft Azure
+- Azure Bicep
+- Azure Management Groups
+- Azure Policies
+- Azure Role-Based Access Control (RBAC)
+- Azure Cost Management
+- GitHub Actions (CI/CD Automation)
 
-## 🧱 Technologies Used
+## What This Project Deploys
+- Top-level management groups and department sub-groups
+- Role-based access control (RBAC) assignments for users
+- Subscription-wide policies enforcing:
+  - Resource location restrictions (Australia East only)
+  - Mandatory Department tagging
+- A storage account (free-tier) for testing
+- Budget alert for subscription cost control
 
-- [Azure Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview)
-- Azure CLI
-- GitHub Actions (CI/CD coming soon)
+## How It Works
+- Infrastructure is defined using Bicep templates (`main.bicep` and `modules/storage.bicep`).
+- A GitHub Actions workflow automatically deploys the environment to Azure whenever changes are pushed to the repository.
+- Unique deployment names are used to prevent deployment conflicts.
+- Idempotent deployments ensure that no duplicate resources are created.
 
-## 🚀 How to Deploy (Manual CLI)
+## Skills Demonstrated
+- Azure Governance and Policy Management
+- Infrastructure as Code (IaC) with Bicep
+- GitHub Actions CI/CD Automation
+- Cloud Cost Management
+- Enterprise Cloud Architecture
 
-```bash
-az deployment sub create \
-  --location australiaeast \
-  --template-file ./azure_enterprise_setup.bicep \
-  --parameters departmentTag="Development"
-```
-
-## 💼 Use Cases
-- Practice enterprise-level Azure governance
-- Demonstrate tagging enforcement and repeatable deployments
-- Build portfolio projects to stand out in cloud and DevOps job applications
-
-## 🔜 Coming Soon
-- Azure Policy Definitions via Bicep
-- RBAC Role Assignments
-- Full GitHub Actions automation pipeline
-
----
-
-> ✍️ Created by Rhys as part of a multi-level mock Azure enterprise environment. Built to simulate real-world cloud infrastructure for learning and job readiness.
+## License
+This project is licensed under the [MIT License](LICENSE).
