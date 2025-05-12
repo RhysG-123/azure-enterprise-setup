@@ -3,6 +3,7 @@ param location string
 param subnetId string
 param lbBackendPoolId string
 param storageAccountName string
+param adminPassword secureString
 
 resource nic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
   name: '${vmName}-nic'
@@ -36,7 +37,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-03-01' = {
     osProfile: {
       computerName: vmName
       adminUsername: 'azureuser'
-      adminPassword: 'Pa55w.rd1234!' // replace with a secure value or use Key Vault for production
+      adminPassword: adminPassword
     }
     storageProfile: {
       imageReference: {
