@@ -5,6 +5,7 @@ param addressPrefix string = '10.0.0.0/16'
 param subnetPrefix string = '10.0.1.0/24'
 param vmCount int = 2
 param storageAccountName string
+@secure()
 param adminPassword string
 
 var commonTags = {
@@ -85,40 +86,40 @@ resource lb 'Microsoft.Network/loadBalancers@2023-04-01' = {
         name: 'BackendPool'
       }
     ]
+    probes: [
+      {
+        name: 'HealthProbe'
+        properties: {
+          protocol: 'Tcp'
+          port: 80
+          intervalInSeconds: 5
+          numberOfProbes: 2
+        }
+      }
+    ]
     loadBalancingRules: [
       {
         name: 'HTTPRule'
         properties: {
           frontendIPConfiguration: {
-            id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', lb.name, 'LoadBalancerFrontEnd')
+            id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', 'vm-loadbalancer', 'LoadBalancerFrontEnd')
           }
           backendAddressPool: {
-            id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', lb.name, 'BackendPool')
+            id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', 'vm-loadbalancer', 'BackendPool')
+          }
+          probe: {
+            id: resourceId('Microsoft.Network/loadBalancers/probes', 'vm-loadbalancer', 'HealthProbe')
           }
           protocol: 'Tcp'
           frontendPort: 80
           backendPort: 80
           enableFloatingIP: false
           idleTimeoutInMinutes: 4
-          probe: {
-            id: resourceId('Microsoft.Network/loadBalancers/probes', lb.name, 'HealthProbe')
-          }
         }
       }
     ]
   }
   dependsOn: [publicIP]
-}
-
-resource healthProbe 'Microsoft.Network/loadBalancers/probes@2023-04-01' = {
-  name: 'HealthProbe'
-  parent: lb
-  properties: {
-    protocol: 'Tcp'
-    port: 80
-    intervalInSeconds: 5
-    numberOfProbes: 2
-  }
 }
 
 module vms 'modules/vm.bicep' = [for i in range(0, vmCount): {
