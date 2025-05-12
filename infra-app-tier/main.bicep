@@ -46,14 +46,14 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
 }
 
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
-  name: '${vnet.name}/${subnetName}'
+  parent: vnet
+  name: subnetName
   properties: {
     addressPrefix: subnetPrefix
     networkSecurityGroup: {
       id: nsg.id
     }
   }
-  dependsOn: [vnet, nsg]
 }
 
 resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
@@ -127,7 +127,7 @@ module vms 'modules/vm.bicep' = [for i in range(0, vmCount): {
     vmName: 'vm-${i}'
     location: location
     subnetId: subnet.id
-    lbBackendPoolId: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', lb.name, 'BackendPool')
+    lbBackendPoolId: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', 'vm-loadbalancer', 'BackendPool')
     storageAccountName: storageAccountName
     adminPassword: adminPassword
   }
