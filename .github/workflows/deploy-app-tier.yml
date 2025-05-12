@@ -27,12 +27,6 @@ jobs:
           subscriptionId: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
           resourceGroupName: rg-dev-site
           template: infra-app-tier/main.bicep
-          parametersJson: |
-            {
-              "storageAccountName": {
-                "value": "devsitestorage1234"
-              },
-              "adminPassword": {
-                "value": "${{ secrets.VM_ADMIN_PASSWORD }}"
-              }
-            }
+          parameters: >
+            storageAccountName=devsitestorage1234
+            adminPassword=${{ secrets.VM_ADMIN_PASSWORD }}
