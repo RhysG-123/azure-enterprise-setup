@@ -131,5 +131,6 @@ module vms 'modules/vm.bicep' = [for i in range(0, vmCount): {
     lbBackendPoolId: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', 'vm-loadbalancer', 'BackendPool')
     storageAccountName: storageAccountName
     adminPassword: adminPassword
+    tags: commonTags
   }
 }]
