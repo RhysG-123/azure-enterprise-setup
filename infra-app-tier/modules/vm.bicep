@@ -3,11 +3,14 @@ param location string
 param subnetId string
 param lbBackendPoolId string
 param storageAccountName string
+@secure()
 param adminPassword string
+param tags object
 
 resource nic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
   name: '${vmName}-nic'
   location: location
+  tags: tags
   properties: {
     ipConfigurations: [
       {
@@ -16,6 +19,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
           subnet: {
             id: subnetId
           }
+          privateIPAllocationMethod: 'Dynamic'
           loadBalancerBackendAddressPools: [
             {
               id: lbBackendPoolId
@@ -30,6 +34,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
 resource vm 'Microsoft.Compute/virtualMachines@2023-03-01' = {
   name: vmName
   location: location
+  tags: tags
   properties: {
     hardwareProfile: {
       vmSize: 'Standard_B1s'
@@ -40,14 +45,17 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-03-01' = {
       adminPassword: adminPassword
     }
     storageProfile: {
-      imageReference: {
-        publisher: 'Canonical'
-        offer: 'UbuntuServer'
-        sku: '18.04-LTS'
-        version: 'latest'
-      }
       osDisk: {
         createOption: 'FromImage'
+        managedDisk: {
+          storageAccountType: 'Standard_LRS'
+        }
+      }
+      imageReference: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2019-Datacenter'
+        version: 'latest'
       }
     }
     networkProfile: {
@@ -60,9 +68,11 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-03-01' = {
     diagnosticsProfile: {
       bootDiagnostics: {
         enabled: true
-        storageUri: 'https://${storageAccountName}.blob.core.windows.net/'
+        storageUri: 'https://${storageAccountName}.blob.core.windows.net'
       }
     }
   }
-  dependsOn: [nic]
+  dependsOn: [
+    nic
+  ]
 }
