@@ -14,15 +14,40 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     addressSpace: {
       addressPrefixes: [addressPrefix]
     }
-    subnets: [
+  }
+}
+
+resource nsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
+  name: '${subnetName}-nsg'
+  location: location
+  properties: {
+    securityRules: [
       {
-        name: subnetName
+        name: 'AllowHTTP'
         properties: {
-          addressPrefix: subnetPrefix
+          priority: 100
+          direction: 'Inbound'
+          access: 'Allow'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '80'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
         }
       }
     ]
   }
+}
+
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
+  name: '${vnet.name}/${subnetName}'
+  properties: {
+    addressPrefix: subnetPrefix
+    networkSecurityGroup: {
+      id: nsg.id
+    }
+  }
+  dependsOn: [vnet, nsg]
 }
 
 resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
@@ -93,7 +118,7 @@ module vms 'modules/vm.bicep' = [for i in range(0, vmCount): {
   params: {
     vmName: 'vm-${i}'
     location: location
-    subnetId: vnet.properties.subnets[0].id
+    subnetId: subnet.id
     lbBackendPoolId: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', lb.name, 'BackendPool')
     storageAccountName: storageAccountName
     adminPassword: adminPassword
