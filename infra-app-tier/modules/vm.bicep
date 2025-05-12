@@ -3,7 +3,7 @@ param location string
 param subnetId string
 param lbBackendPoolId string
 param storageAccountName string
-param adminPassword secureString
+param adminPassword string
 
 resource nic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
   name: '${vmName}-nic'
