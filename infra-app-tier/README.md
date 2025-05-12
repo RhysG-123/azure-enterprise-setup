@@ -50,8 +50,8 @@ The CI/CD pipeline uses:
 
 - Infrastructure as Code with Bicep  
 - CI/CD automation using GitHub Actions  
-- Azure Networking & Load Balancing  
-- Virtual Machine provisioning with diagnostics  
+- Azure networking and load balancing  
+- Virtual machine provisioning with diagnostics  
 - Azure Policy compliance (tag enforcement)  
 - Secure DevOps practices with secrets injection
 
@@ -59,6 +59,6 @@ The CI/CD pipeline uses:
 
 ## Notes
 
-- All resources are deployed to the `rg-dev-site` resource group in `Australia East`
+- All resources are deployed to the `rg-dev-site` resource group in **Australia East**
 - VM passwords must meet complexity rules defined by Azure
-- The subnet, NSG, and LB are designed to be reusable for future app tiers
+- The subnet, NSG, and Load Balancer are designed to be reusable for future application tiers
