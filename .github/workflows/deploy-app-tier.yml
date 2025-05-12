@@ -1,1 +1,31 @@
+name: Deploy App Tier to Azure
 
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'infra-app-tier/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy App Tier Bicep
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
+          resourceGroupName: rg-dev-site
+          template: infra-app-tier/main.bicep
+          parameters: >
+            storageAccountName='devsitestorage1234'
+            adminPassword::${{ secrets.VM_ADMIN_PASSWORD }}
