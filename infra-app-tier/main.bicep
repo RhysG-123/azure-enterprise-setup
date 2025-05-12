@@ -7,9 +7,14 @@ param vmCount int = 2
 param storageAccountName string
 param adminPassword secureString
 
+var commonTags = {
+  Department: 'Development'
+}
+
 resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: vnetName
   location: location
+  tags: commonTags
   properties: {
     addressSpace: {
       addressPrefixes: [addressPrefix]
@@ -20,6 +25,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 resource nsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
   name: '${subnetName}-nsg'
   location: location
+  tags: commonTags
   properties: {
     securityRules: [
       {
@@ -53,6 +59,7 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
 resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   name: 'vm-public-ip'
   location: location
+  tags: commonTags
   properties: {
     publicIPAllocationMethod: 'Dynamic'
   }
@@ -61,6 +68,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
 resource lb 'Microsoft.Network/loadBalancers@2023-04-01' = {
   name: 'vm-loadbalancer'
   location: location
+  tags: commonTags
   properties: {
     frontendIPConfigurations: [
       {
