@@ -5,7 +5,7 @@ param addressPrefix string = '10.0.0.0/16'
 param subnetPrefix string = '10.0.1.0/24'
 param vmCount int = 2
 param storageAccountName string
-param adminPassword secureString
+param adminPassword string
 
 var commonTags = {
   Department: 'Development'
