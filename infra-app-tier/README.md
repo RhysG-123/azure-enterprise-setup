@@ -1,12 +1,8 @@
-# App Tier Deployment
-
 ## Overview
 
 This module provisions a fully functional application tier in Azure, built using modular Bicep templates and deployed through GitHub Actions.
 
 It includes networking, security, and compute infrastructure designed to reflect real-world enterprise standards — all governed by policy-compliant metadata tagging.
-
----
 
 ## What This Deploys
 
@@ -20,17 +16,15 @@ It includes networking, security, and compute infrastructure designed to reflect
 
 - **Azure Load Balancer**  
   - Public IP frontend  
-  - Backend pool distributes traffic across 2 VMs  
+  - Backend pool distributes traffic across two VMs  
   - TCP health probe on port 80
 
 - **Virtual Machines**  
-  - 2 Windows Server VMs (`Standard_B1s`)  
-  - Boot diagnostics enabled (linked to storage account)  
+  - Two Windows Server VMs (`Standard_B1s`)  
+  - Boot diagnostics enabled (linked to a storage account)  
   - NICs assigned and load-balanced  
   - Credentials securely managed via GitHub Secrets  
   - **Tag: `Department=Development`** (required by enterprise policy)
-
----
 
 ## Deployment Method
 
@@ -41,10 +35,8 @@ The CI/CD pipeline uses:
 - `@secure()` Bicep parameters for password security
 - GitHub Secrets for credential injection
 
-> 📁 Deployment template: [`main.bicep`](./main.bicep)  
-> 📄 Workflow: [`.github/workflows/deploy-app-tier.yml`](../.github/workflows/deploy-app-tier.yml)
-
----
+📁 **Deployment template:** [`main.bicep`](./main.bicep)  
+📄 **Workflow:** [`.github/workflows/deploy-app-tier.yml`](../.github/workflows/deploy-app-tier.yml)
 
 ## Skills Demonstrated
 
@@ -53,12 +45,10 @@ The CI/CD pipeline uses:
 - Azure networking and load balancing  
 - Virtual machine provisioning with diagnostics  
 - Azure Policy compliance (tag enforcement)  
-- Secure DevOps practices with secrets injection
-
----
+- Secure DevOps practices using secrets management
 
 ## Notes
 
 - All resources are deployed to the `rg-dev-site` resource group in **Australia East**
-- VM passwords must meet complexity rules defined by Azure
+- VM passwords must meet Azure complexity requirements
 - The subnet, NSG, and Load Balancer are designed to be reusable for future application tiers
